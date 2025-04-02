@@ -208,12 +208,12 @@ public boolean withdraw(long cardNumber, int pin, int amount) {
 			    
 			    for (ATM user : users) {
 			        if (user.getCardNumber() == cardNumber && user.getPin() == pin) {
-			            // First check if balance is sufficient
+			        
 			            if (user.getAmount() < amount) {
-			                return false; // or throw new InsufficientBalanceException()
+			                return false; 
 			            }
 			            
-			            // Only perform withdrawal if balance is sufficient
+			           
 			            int newBalance = user.getAmount() - amount;
 			            user.setAmount(newBalance);
 			            repository.save(user);
@@ -249,25 +249,25 @@ public class TransferService {
     private RegisRepository repository;*/
     
  /*   public TransferResponse transferMoney(long toAccount, long fromAccount, int amount, int pin) {
-        // Find sender account
+       
         RegistUser sender = repository.findByCardNumberAndPin(fromAccount, pin)
             .orElseThrow(() -> new RuntimeException("Invalid card number or PIN"));
         
-        // Check if sender has sufficient balance
+       
         if (sender.getAmount() < amount) {
             return new TransferResponse(false, "Insufficient balance", 
                                       fromAccount, toAccount, amount, sender.getAmount());
         }
         
-        // Find receiver account
+       
         RegistUser receiver = repository.findByCardNumber(toAccount)
             .orElseThrow(() -> new RuntimeException("Receiver account not found"));
         
-        // Perform transfer
+       
         sender.setAmount(sender.getAmount() - amount);
         receiver.setAmount(receiver.getAmount() + amount);
         
-        // Save both accounts
+        
         repository.save(sender);
         repository.save(receiver);
         
@@ -400,7 +400,7 @@ public Map<String, Object> forgot(long cardNumber, String email, long phoneNumbe
 public Map<String, Object> trans(long toAccount, long fromAccount, int amount, int pin) {
     Map<String, Object> response = new HashMap<>();
     
-    // Validate same account transfer
+    
     if(toAccount == fromAccount) {
         response.put("success", false);
         response.put("message", "Cannot transfer to same account");
@@ -410,7 +410,7 @@ public Map<String, Object> trans(long toAccount, long fromAccount, int amount, i
     Optional<ATM> receiverOpt = repository.findByCardNumber(toAccount);
     Optional<ATM> senderOpt = repository.findByCardNumber(fromAccount);
     
-    // Validate accounts exist
+   
     if(receiverOpt.isEmpty() || senderOpt.isEmpty()) {
         response.put("success", false);
         response.put("message", "Invalid account details");
@@ -420,28 +420,28 @@ public Map<String, Object> trans(long toAccount, long fromAccount, int amount, i
     ATM sender = senderOpt.get();
     ATM receiver = receiverOpt.get();
     
-    // Validate PIN
+    
     if(sender.getPin() != pin) {
         response.put("success", false);
         response.put("message", "Invalid PIN");
         return response;
     }
     
-    // Validate sufficient balance
+    
     if(sender.getAmount() < amount) {
         response.put("success", false);
         response.put("message", "Insufficient balance");
         return response;
     }
     
-    // Perform transfer
+    
     sender.setAmount(sender.getAmount() - amount);
     receiver.setAmount(receiver.getAmount() + amount);
     
     repository.save(sender);
     repository.save(receiver);
     
-    // Prepare response
+    
     response.put("success", true);
     response.put("message", "Transfer successful");
     response.put("fromAccount", fromAccount);
