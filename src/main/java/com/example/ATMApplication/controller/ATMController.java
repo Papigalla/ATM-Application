@@ -105,38 +105,40 @@ public class ATMController {
 	    	model.addAllAttributes(response);
 	       return "transfer.jsp";
 	    }*/
-	    @PostMapping("/transfer")
+	   @PostMapping("/transfer")
 	    public String transfer(
 	            @RequestParam("toAccount") long toAccount,
 	            @RequestParam("fromAccount") long fromAccount,
 	            @RequestParam("amount") int amount,
-	            @RequestParam("pin") int pin, Model model) {
-	        Map<String, Object> response = service.trans(toAccount, fromAccount, amount, pin);
+	            @RequestParam("pin") int pin, 
+	            Model model) {
 	        
-	        // Add all response attributes to the model
+	        Map<String, Object> response = service.trans(toAccount, fromAccount, amount, pin);
 	        model.addAllAttributes(response);
 	        
-	        // Add specific attributes that your JSP expects
-	        if (response.containsKey("valid")) {
+	        if (response != null && Boolean.TRUE.equals(response.get("valid"))) {
 	            model.addAttribute("transferResponse", new TransferRespo(
 	                "Success",
-	                "Transfer completed successfully",
+	                response.get("message").toString(),
 	                fromAccount,
 	                toAccount,
 	                amount,
-	                (Integer) response.get("newamount")
+	                ((Number) response.get("newamount")).intValue(),
+	                LocalDateTime.now()  // Add current time as transaction time
 	            ));
 	        } else {
 	            model.addAttribute("transferResponse", new TransferRespo(
 	                "Failed",
-	                "Invalid account details or PIN",
+	                response != null ? response.get("message").toString() : "Transfer failed",
 	                fromAccount,
 	                toAccount,
 	                0,
-	                0
+	                0,
+	                LocalDateTime.now()
 	            ));
 	        }
 	        
+	        model.addAttribute("userid", fromAccount);
 	        return "transfer.jsp";
 	    }
 	    @PostMapping("/ChangePin")
