@@ -400,9 +400,9 @@ public Map<String, Object> forgot(long cardNumber, String email, long phoneNumbe
 public Map<String, Object> trans(long toAccount, long fromAccount, int amount, int pin) {
     Map<String, Object> response = new HashMap<>();
     
-    
+    // Validate same account transfer
     if(toAccount == fromAccount) {
-        response.put("success", false);
+        response.put("valid", false);  // Changed from "success"
         response.put("message", "Cannot transfer to same account");
         return response;
     }
@@ -410,9 +410,9 @@ public Map<String, Object> trans(long toAccount, long fromAccount, int amount, i
     Optional<ATM> receiverOpt = repository.findByCardNumber(toAccount);
     Optional<ATM> senderOpt = repository.findByCardNumber(fromAccount);
     
-   
+    // Validate accounts exist
     if(receiverOpt.isEmpty() || senderOpt.isEmpty()) {
-        response.put("success", false);
+        response.put("valid", false);  // Changed from "success"
         response.put("message", "Invalid account details");
         return response;
     }
@@ -420,34 +420,32 @@ public Map<String, Object> trans(long toAccount, long fromAccount, int amount, i
     ATM sender = senderOpt.get();
     ATM receiver = receiverOpt.get();
     
-    
+    // Validate PIN
     if(sender.getPin() != pin) {
-        response.put("success", false);
+        response.put("valid", false);  // Changed from "success"
         response.put("message", "Invalid PIN");
         return response;
     }
     
-    
+    // Validate sufficient balance
     if(sender.getAmount() < amount) {
-        response.put("success", false);
+        response.put("valid", false);  // Changed from "success"
         response.put("message", "Insufficient balance");
         return response;
     }
     
-    
+    // Perform transfer
     sender.setAmount(sender.getAmount() - amount);
     receiver.setAmount(receiver.getAmount() + amount);
     
     repository.save(sender);
     repository.save(receiver);
     
-    
-    response.put("success", true);
+    // Prepare response - using keys that match controller expectations
+    response.put("valid", true);       // Changed from "success"
     response.put("message", "Transfer successful");
-    response.put("fromAccount", fromAccount);
-    response.put("toAccount", toAccount);
-    response.put("amountTransferred", amount);
-    response.put("fromAccountNewBalance", sender.getAmount());
+    response.put("newamount", sender.getAmount());  // Changed from "fromAccountNewBalance"
+    response.put("amount", amount);
     
     return response;
 }
