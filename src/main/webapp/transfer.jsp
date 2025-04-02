@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@page import="com.example.ATMApplication.entity.TransferRespo"%>
+<%@page import="java.util.*" %>
+<%@page import="java.time.format.DateTimeFormatter" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -212,19 +215,22 @@
     </style>
 </head>
 <body>
+
 <% String userid = request.getParameter("userid"); %>
     <div class="atm-container">
         <h1>Money Transfer</h1>
-        
-        <c:if test="${not empty errorMessage}">
-            <div class="message error">${errorMessage}</div>
-        </c:if>
-        
-        <c:if test="${not empty successMessage}">
-            <div class="message success">${successMessage}</div>
-        </c:if>
-        
-        <form action="Transfer" method="post">
+         <!-- Display error messages if any -->
+        <%
+        String errorMsg = (String) request.getAttribute("message");
+        if (errorMsg != null && !errorMsg.isEmpty()) {
+        %>
+            <div class="message error">
+                <%= errorMsg %>
+            </div>
+        <% } %>
+      
+      
+        <form action="transfer" method="post">
             <div class="form-group">
                 <label for="fromAccount">From Account:</label>
                 <input type="text" id="fromAccount" name="fromAccount" required 
@@ -267,42 +273,81 @@
             <button type="submit" class="btn-transfer">Transfer Money</button>
         </form>
         
-        <c:if test="${not empty transferResponse}">
-            <div class="transfer-details">
-                <h3>Transfer Receipt</h3>
-                <div class="detail-row">
-                    <span class="detail-label">Status:</span>
-                    <span class="detail-value">
-                        ${transferResponse.success ? 'Success' : 'Failed'}
-                    </span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Message:</span>
-                    <span class="detail-value">${transferResponse.message}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">From Account:</span>
-                    <span class="detail-value account-number">${transferResponse.fromAccount}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">To Account:</span>
-                    <span class="detail-value account-number">${transferResponse.toAccount}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Amount Transferred:</span>
-                    <span class="detail-value amount-value">
-                        ₹${transferResponse.amountTransferred}
-                    </span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Your New Balance:</span>
-                    <span class="detail-value">
-                        ₹${transferResponse.fromAccountNewBalance}
-                    </span>
-                </div>
-            </div>
-        </c:if>
-        
+     <%
+    TransferRespo responses = (TransferRespo) request.getAttribute("transferResponse");
+    if (responses != null) {
+%>   
+
+   <div class="transfer-details">
+    <h3>Transfer Receipt</h3>
+    <div class="detail-row">
+        <span class="detail-label">Status:</span>
+        <span class="detail-value status-<%=responses.getStatus() != null ? responses.getStatus().toLowerCase() : "unknown"%>">
+            <%=responses.getStatus() != null ? responses.getStatus() : "Unknown" %>
+        </span>
+    </div>
+    <div class="detail-row">
+        <span class="detail-label">Transaction Time:</span>
+        <span class="detail-value">
+            <%=responses.getTransactionTime() != null ? 
+                responses.getTransactionTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : 
+                "N/A" %>
+        </span>
+    </div>
+    <div class="detail-row">
+        <span class="detail-label">Message:</span>
+        <span class="detail-value"><%=responses.getMessage() %></span>
+    </div>
+    <div class="detail-row">
+        <span class="detail-label">From Account:</span>
+        <span class="detail-value account-number">
+            <% 
+            String fromAcct = String.valueOf(responses.getFromAccount());
+            out.print(fromAcct.length() > 4 ? "****" + fromAcct.substring(fromAcct.length()-4) : fromAcct);
+            %>
+        </span>
+    </div>
+    <div class="detail-row">
+        <span class="detail-label">To Account:</span>
+        <span class="detail-value account-number">
+            <% 
+            String toAcct = String.valueOf(responses.getToAccount());
+            out.print(toAcct.length() > 4 ? "****" + toAcct.substring(toAcct.length()-4) : toAcct);
+            %>
+        </span>
+    </div>
+    <div class="detail-row">
+        <span class="detail-label">Amount Transferred:</span>
+        <span class="detail-value amount-value">
+            ₹<%=responses.getAmountTransferred() %>
+        </span>
+    </div>
+    <div class="detail-row">
+        <span class="detail-label">Your New Balance:</span>
+        <span class="detail-value">
+            ₹<%=responses.getFromAccountNewBalance() %>
+        </span>
+    </div>
+</div>   
+        <%} %>
+        <script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    const toAccount = document.getElementById('toAccount').value;
+    const confirmAccount = document.getElementById('confirmAccount').value;
+    
+    if (toAccount !== confirmAccount) {
+        alert('Account numbers do not match!');
+        e.preventDefault();
+        return false;
+    }
+    
+    return true;
+});
+
+function setAmount(amount) {
+    document.getElementById('amount').value = amount;
+}
+</script>
         <a href="login.jsp" class="btn-transfer" style="margin-top: 20px; text-align: center; display: block; text-decoration: none;">
             Back to Dashboard
         </a>
