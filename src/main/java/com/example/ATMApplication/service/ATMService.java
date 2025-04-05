@@ -29,26 +29,7 @@ public class ATMService {
 
 
 	public boolean displayUser(long cardNumber,int pin) {
-	/*long card = 0;
-	int pins =0;
-		List<ATM> user=repository.findAll();
-		for(ATM users:user)
-		{
-			 card=users.getCardNumber();
-			 pins=users.getPin();
-		}
-		
-	if(cardNumber==card && pins==pin)
-	{
-		
-		return true;
-	}
-	else
-	{
-		return false;
-	}*/
-		
-		//---------------------------------------
+	
 	List<ATM>user=repository.findAll();
 	for(ATM users:user)
 	{
@@ -58,15 +39,6 @@ public class ATMService {
 		}
 	}
 	return false;
-	
-	/*	Optional<ATM> user=repository.findByEmailId(emailId);
-		if(user.isPresent())
-		{
-		return user.get().getPassword().equals(password);
-		}
-		return false;*/
-		
-		
 	}
 
 
@@ -116,36 +88,7 @@ public class ATMService {
 	}
 
 
-/*	public List<RegistUser> balanceAmount(long cardNumber, int pin) {
-		long card = 0;
-		int pins =0;
-	      RegistUser  foundObject=null;
-		long cardNumbers=cardNumber;
-			List<RegistUser> user=repository.findAll();
-			for(RegistUser users:user)
-			{
-				 card=users.getCardNumber();
-				 pins=users.getPin();
-				 if(cardNumber==card && pins==pin)
-				 {
-					if(users.getCardNumber().equals(cardNumbers))
-					{
-						foundObject=users;
-						break;
-					}
-				 }
-				 
-			
-			}
-			if(foundObject!=null)
-			{
-				return foundObject;
-			}
-			else
-			{
-				return null;
-			}
-	}*/
+
 	public List<ATM> balanceAmount(long cardNumber, int pin) {
 	    List<ATM> allUsers = repository.findAll();
 	    List<ATM> matchedUsers = new ArrayList<>();
@@ -158,50 +101,7 @@ public class ATMService {
 	    return matchedUsers; // Returns empty list if no matches
 	}
 			
-	/*	if(cardNumber==card && pins==pin)
-		{
-			
-		   return user;
-		}
-		else
-		{
-			return null;
-		}
-		*/
-		
-		
-	//}
 	
-	/*public ATM getUserByCredentials(long cardNumber, int pin) {
-	    return repository.findAll().stream()
-	        .filter(u -> u.getCardNumber() == cardNumber && u.getPin() == pin)
-	        .findFirst()
-	        .orElse(null);
-	}*/
-	
-
-	/*public String[] withdraw(long cardNumber, int pin, int amount) {
-		List<ATM>amounts	=repository.findAll();
-		
-		   for(ATM use:amounts)
-		   {
-			   if(use.getCardNumber()==cardNumber&&use.getPin()==pin) {
-				  
-				   if (use.getAmount() < amount) {
-		                return false; 
-		            }
-		            
-		          
-		            int newBalance = use.getAmount() - amount;
-		            use.setAmount(newBalance);
-		            repository.save(use);
-		            return true;
-				  
-				   }
-			   }
-		   return new String[true,false];
-			   
-		   }*/
 
 public boolean withdraw(long cardNumber, int pin, int amount) {
 			    List<ATM> users = repository.findAll();
@@ -224,104 +124,7 @@ public boolean withdraw(long cardNumber, int pin, int amount) {
 			}
 
 
-/*public void transfering(long cardNumber,long cardNumberf, int amount, int pin) {
-  List<ATM>user=repository.findAll();	
-  for(ATM users:user)
-  {
-	  if (users.getCardNumber() == cardNumber && users.getPin() == pin) {
-		  if(users.getCardNumber()==cardNumberf)
-		  {
-			  if (users.getAmount() < amount) {
-	                return false;
-	            } 
-			  int newBalance = users.getAmount() - amount;
-	            users.setAmount(newBalance);
-		  }
-	  
-	  }
-  }
-  
-  }*/
-/*@Service
-public class TransferService {
-    
-    @Autowired
-    private RegisRepository repository;*/
-    
- /*   public TransferResponse transferMoney(long toAccount, long fromAccount, int amount, int pin) {
-       
-        RegistUser sender = repository.findByCardNumberAndPin(fromAccount, pin)
-            .orElseThrow(() -> new RuntimeException("Invalid card number or PIN"));
-        
-       
-        if (sender.getAmount() < amount) {
-            return new TransferResponse(false, "Insufficient balance", 
-                                      fromAccount, toAccount, amount, sender.getAmount());
-        }
-        
-       
-        RegistUser receiver = repository.findByCardNumber(toAccount)
-            .orElseThrow(() -> new RuntimeException("Receiver account not found"));
-        
-       
-        sender.setAmount(sender.getAmount() - amount);
-        receiver.setAmount(receiver.getAmount() + amount);
-        
-        
-        repository.save(sender);
-        repository.save(receiver);
-        
-        return new TransferResponse(true, "Transfer successful", 
-                                  fromAccount, toAccount, amount, sender.getAmount());
-    }*/
 
-
-
-
-/*public boolean changePin(long cardNumber, int currentPin, int newPin, int confirmPin) {
-      List<RegistUser>use=repository.findAll();
-      List<RegistUser> matchedUsers = new ArrayList<>();
-      int pins=newPin;
-	
-      for(RegistUser users:use)
-      {
-    	  if(cardNumber==users.getCardNumber()&&users.getPin()==currentPin)
-    	  {
-    		  matchedUsers.add(users);
-    	       if(newPin==confirmPin)
-    	        {
-    	           for(RegistUser userss:matchedUsers)
-                    {
-        	           userss.setPin(pins);
-                     }
-                 }
-      
-	
-           }
-       }
-      return false;
-      
-      }*/
-/*public boolean changePin(long cardNumber, int currentPin, int newPin, int confirmPin) {
-    
-    RegistUser user = repository.findByCardNumber(cardNumber);
-    
-    
-    if (user == null || user.getPin() != currentPin) {
-        return false;
-    }
-    
-   
-    if (newPin != confirmPin) {
-        return false;
-    }
-    
-    
-    user.setPin(newPin);
-    repository.save(user); 
-    
-    return true;
-}*/
 public boolean changePin(long cardNumber, int currentPin, int newPin, int confirmPin) {
    
     Optional<ATM> userOpt = repository.findByCardNumber(cardNumber);
@@ -363,46 +166,13 @@ public Map<String, Object> forgot(long cardNumber, String email, long phoneNumbe
 }
 
 
-/*public Map<String, Object> trans(long toAccount, long fromAccount, int amount, int pin) {
-	 Optional<RegistUser> userOpt = repository.findByCardNumber(toAccount);
-	 Optional<RegistUser> userOpt1 = repository.findByCardNumber(fromAccount);
-	 Map<String, Object> response = new HashMap<>();
-	 int money = 0;
-	 int moneys=0;
-	 
-	 if(userOpt.isEmpty()||userOpt.get().getCardNumber()!=toAccount||userOpt.get().getPin()!=pin||userOpt1.isEmpty()||userOpt1.get().getCardNumber()!=fromAccount)
-	 {
-		 response.put("invalid",false);
-		 
-		 
-	 }
-	 else
-	 {
-		 int sender=userOpt.get().getAmount();
-		int receiver= userOpt1.get().getAmount();
-		if(sender>=0)
-		{
-		  money= receiver+amount;
-		  userOpt1.get().setAmount(money);
-		  moneys=sender-amount;
-		  userOpt.get().setAmount(moneys);
-		}
-		response.put("valid",true);
-		response.put("fromAccount", userOpt.get().getCardNumber());
-		response.put("toaccount", userOpt1.get().getCardNumber());
-		response.put("amount", amount);
-		response.put("newamount", moneys);
-		
-	 }
-	 return response;
-}*/
 @Transactional
 public Map<String, Object> trans(long toAccount, long fromAccount, int amount, int pin) {
     Map<String, Object> response = new HashMap<>();
     
-    // Validate same account transfer
+    
     if(toAccount == fromAccount) {
-        response.put("valid", false);  // Changed from "success"
+        response.put("valid", false);  
         response.put("message", "Cannot transfer to same account");
         return response;
     }
@@ -410,9 +180,9 @@ public Map<String, Object> trans(long toAccount, long fromAccount, int amount, i
     Optional<ATM> receiverOpt = repository.findByCardNumber(toAccount);
     Optional<ATM> senderOpt = repository.findByCardNumber(fromAccount);
     
-    // Validate accounts exist
+    
     if(receiverOpt.isEmpty() || senderOpt.isEmpty()) {
-        response.put("valid", false);  // Changed from "success"
+        response.put("valid", false); 
         response.put("message", "Invalid account details");
         return response;
     }
@@ -420,31 +190,31 @@ public Map<String, Object> trans(long toAccount, long fromAccount, int amount, i
     ATM sender = senderOpt.get();
     ATM receiver = receiverOpt.get();
     
-    // Validate PIN
+    
     if(sender.getPin() != pin) {
-        response.put("valid", false);  // Changed from "success"
+        response.put("valid", false); 
         response.put("message", "Invalid PIN");
         return response;
     }
     
-    // Validate sufficient balance
+    
     if(sender.getAmount() < amount) {
-        response.put("valid", false);  // Changed from "success"
+        response.put("valid", false);
         response.put("message", "Insufficient balance");
         return response;
     }
     
-    // Perform transfer
+    
     sender.setAmount(sender.getAmount() - amount);
     receiver.setAmount(receiver.getAmount() + amount);
     
     repository.save(sender);
     repository.save(receiver);
     
-    // Prepare response - using keys that match controller expectations
-    response.put("valid", true);       // Changed from "success"
+    
+    response.put("valid", true);       
     response.put("message", "Transfer successful");
-    response.put("newamount", sender.getAmount());  // Changed from "fromAccountNewBalance"
+    response.put("newamount", sender.getAmount());  
     response.put("amount", amount);
     
     return response;
