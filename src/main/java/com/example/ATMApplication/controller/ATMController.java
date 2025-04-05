@@ -59,21 +59,7 @@ public class ATMController {
 	       model.addAttribute("Details",user);
 	       return "balance.jsp";
 	    }
-	  /*  public String balance(
-	    	    @RequestParam long cardNumber,
-	    	    @RequestParam int pin,
-	    	    Model model) {
-	    	    
-	    	    RegistUser user = service.getUserByCredentials(cardNumber, pin);
-	    	    
-	    	    if(user == null) {
-	    	        model.addAttribute("error", "Invalid card number or PIN");
-	    	        return "error.jsp";  // or redirect to login page
-	    	    }
-	    	    
-	    	    model.addAttribute("Details", user);
-	    	    return "balance.jsp";
-	    	}*/
+	 
 	    @PostMapping("/Withdraw")
 	    public String withdrawn(@RequestParam long cardNumber,@RequestParam int pin,@RequestParam int amount)
 	    {
@@ -88,23 +74,7 @@ public class ATMController {
 	    	}
 	    	
 	    }
-	  /*  @PostMapping("/Transfer")
-	    public String transfer(@RequestParam("toAccount") long cardNumber,@RequestParam("fromAccount") long cardNumberf,@RequestParam("amount") int amount,@RequestParam("pin") int pin)
-	    {
-	    	service.transfering(cardNumber,cardNumbers,amount,pin);
-	    	return "";
-	    }
-	  */
-	  /*  @PostMapping("/transfer")
-	    public String transfer(
-	            @RequestParam("toAccount") long toAccount,
-	            @RequestParam("fromAccount") long fromAccount,
-	            @RequestParam("amount") int amount,
-	            @RequestParam("pin") int pin,Model model) {
-	    	Map<String, Object> response=service.trans(toAccount,fromAccount,amount,pin);
-	    	model.addAllAttributes(response);
-	       return "transfer.jsp";
-	    }*/
+	 
 	   @PostMapping("/transfer")
 	    public String transfer(
 	            @RequestParam("toAccount") long toAccount,
